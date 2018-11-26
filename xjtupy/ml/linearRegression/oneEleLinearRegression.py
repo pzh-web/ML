@@ -20,9 +20,7 @@ if __name__ == '__main__':
     y = np.array(y, dtype=float)
     plt.grid()
     plt.plot(x, y, 'ro')
-    # 步长
-    stepSize = 0.001
-    g = GradientDescent(stepSize, False)
+    g = GradientDescent()
     t0, t1 = g.gradient_descent(x, y)
     y = t0 + t1 * x
     plt.plot(x, y, 'g-')

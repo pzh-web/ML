@@ -13,105 +13,138 @@ import numpy as np
 
 
 class GradientDescent(object):
-
-    def __init__(self, step_size=0.001, random=True, ridge=False, ridge_param=None):
-        self.step_size = step_size
+    def __init__(self, learn_rate=0.001, random=True, ridge=False, ridge_param=2):
+        '''
+        :param learn_rate: 梯度下降算法的步长
+        :param random: 是否使用随机梯度下降算法
+        :param ridge: 是否使用岭回归
+        :param ridge_param: 正则化参数
+        '''
+        self.learn_rate = learn_rate
         self.random = random
         self.ridge_param = ridge_param
         self.ridge = ridge
 
-    def sum_of_gradient(self, x, y, thetas, dimension):
+    def sum_of_gradient(self, sample, true_value, thetas, dimension):
         """
-        :param x: 给定训练数据
-        :param y: 真实输出值
+        :param sample: 给定训练数据
+        :param true_value: 真实输出值
         :param thetas: 训练参数
         :param dimension: 数据维度，其中默认x0=1
-        :return:
+        :return: 损失函数对参数求偏导
         """
-        m = len(x)
+        sample_num = len(sample)
         params = []
         if self.random:
             # 随机梯度下降
             # 获取样本
-            sample_index = np.random.randint(0, m, 1, dtype=int)[0]
-            for i in np.arange(0, dimension):
-                if i == 0:
-                    params.append(self.update_thetas(thetas, dimension, x, y, sample_index, -1))
-                else:
-                    params.append(self.update_thetas(thetas, dimension, x, y, sample_index, i))
+            sample_index = np.random.randint(0, sample_num, 1, dtype=int)[0]
+            for param_index in np.arange(0, dimension):
+                param = self.update_thetas(thetas, sample, true_value, sample_index, param_index)
+                # 做岭回归
+                if self.ridge and param_index != 0:
+                    param = param + self.ridge_param * thetas[param_index]
+                params.append(param)
         else:
             # 批量梯度下降
-            for j in np.arange(0, dimension):
-                if j == 0:
-                    params.append(1.0 / m * sum([self.update_thetas(thetas, dimension, x, y, i, -1) for i in range(m)]))
-                else:
-                    param = 1.0 / m * sum([self.update_thetas(thetas, dimension, x, y, i, j) for i in range(m)])
-                    # 做岭回归
-                    if self.ridge:
-                        param = param + self.ridge_param / m * thetas[j]
-                    params.append(param)
+            for param_index in np.arange(0, dimension):
+                param = 1.0 / sample_num * sum(
+                    [self.update_thetas(thetas, sample, true_value, sample_index, param_index)
+                     for sample_index in range(sample_num)])
+                # 做岭回归
+                if self.ridge and param_index != 0:
+                    param = param + self.ridge_param / sample_num * thetas[param_index]
+                params.append(param)
         return params
 
-    def update_thetas(self, thetas, dimension, x, y, sample_index, param_index):
-        sum = 0
-        param_value = 1
-        for i in range(0, dimension):
-            if i == 0:
-                sum = sum + thetas[i]
-            else:
-                sum = sum + thetas[i] * x[sample_index][i - 1]
-            if param_index == i:
-                param_value = x[sample_index][i - 1]
-        sum = sum - y[sample_index]
-        sum = sum * param_value
-        return sum
+    @staticmethod
+    def update_thetas(thetas, sample, true_value, sample_index, param_index):
+        sample_num = len(sample)
+        b = np.ones(sample_num)
+        sample = np.insert(sample, 0, values=b, axis=1)
+        if param_index == 0:
+            param_value = 1
+        else:
+            param_value = sample[sample_index][param_index]
+        return (np.dot(thetas, sample[sample_index]) - true_value[sample_index]) * param_value
 
-    def step(self, thetas, direction, step_size):
+    def step(self, thetas, direction):
         """
         更新参数
         :param thetas:上一步的参数值
         :param direction: 代价函数对各参数求偏导后的值
-        :param step_size: 学习率
         :return:
         """
-        return [thetas_i + step_size * direction_i for thetas_i, direction_i
-                in zip(thetas, direction)]
+        return np.array(thetas) - self.learn_rate * np.array(direction)
+
+    def cost_function(self, sample, true_value, params):
+        '''
+        代价函数
+        :param sample: 样本
+        :param true_value: 样本实际输出值
+        :param params: 当前参数
+        :return: 返回当前代价
+        '''
+        sample_num = len(sample)
+        cost = 0
+        b = np.ones(sample_num)
+        sample = np.insert(sample, 0, values=b, axis=1)
+        for i in range(sample_num):
+            # 模型计算出来的值
+            fx = np.dot(sample[i], params)
+            # 误差
+            err = fx - true_value[i]
+            cost = cost + np.dot(err.T, err)
+        return 1.0 / (2 * sample_num) * cost
 
     def distance(self, v, w):
         """两点的距离"""
         return math.sqrt(self.squared_distance(v, w))
 
-    def squared_distance(self, v, w):
-        vector_subtract = [v_i - w_i for v_i, w_i in zip(v, w)]
-        return sum(vector_subtract_i * vector_subtract_i for vector_subtract_i, vector_subtract_i
-                   in zip(vector_subtract, vector_subtract))
+    @staticmethod
+    def squared_distance(v, w):
+        return np.dot(np.array(v) - np.array(w), np.array(v) - np.array(w))
 
-    def gradient_descent(self, x, y, tolerance=0.000000001, max_iter=100000):
+    def gradient_descent(self, sample, true_value, tolerance=0.000000001, min_cost=0.25, max_iter=1000000):
         """梯度下降"""
         # 迭代次数
         iter = 0
-        # 初始化参数
-        thetas = [0 for i in np.arange(0, len(x[0]) + 1)]
+        # 初始化参数,将b视为theta0
+        thetas = [0 for i in np.arange(0, len(sample[0]) + 1)]
         while True:
             # 代价函数对参数求导
-            gradient = self.sum_of_gradient(x, y, thetas, len(thetas))
+            gradient = self.sum_of_gradient(sample, true_value, thetas, len(thetas))
+            # 计算代价
+            # if self.cost_function(sample, true_value, thetas) < min_cost:
+            #     break
+
             # 更新参数
-            next_thetas = self.step(thetas, gradient, self.step_size)
+            next_thetas = self.step(thetas, gradient)
+            # 相邻两次参数更新值更接近
             if self.distance(next_thetas, thetas) < tolerance:
                 break
             thetas = next_thetas
-            iter += 1  # update iter
+            # 更新学习率
+            # self.update_learn_rate(iter)
+            iter += 1
             if iter == max_iter:
-                print('Max iteractions exceeded!')
+                print('超过最大迭代次数')
                 break
         return thetas
+
+    def update_learn_rate(self, iter):
+        if iter == 100:
+            self.learn_rate = 0.1
+        elif iter == 1000:
+            self.learn_rate = 0.01
+        elif iter == 100000:
+            self.learn_rate = 0.001
 
 
 if __name__ == '__main__':
     x = np.array([0.8, 1.1, 1.9, 3.1, 3.3, 3.3, 4.0, 5.1, 4.9, 6.2]).reshape(-1, 1)
     y = [110, 120, 111, 140, 150, 145, 139, 141, 155, 170]
     # 步长
-    stepSize = 0.001
-    g = GradientDescent(stepSize)
+    g = GradientDescent()
     t0, t1 = g.gradient_descent(x, y)
     print(t0, " ", t1)

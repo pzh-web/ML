@@ -19,9 +19,7 @@ if __name__ == '__main__':
     y = data['y']
     x = np.array(x, dtype=float)
     y = np.array(y, dtype=float)
-    # 步长
-    stepSize = 0.001
-    g = GradientDescent(stepSize, False)
+    g = GradientDescent()
     # 习得参数
     params = g.gradient_descent(x, y)
     # 给出待预测的特征（4个），并求得预测值

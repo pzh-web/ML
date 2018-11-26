@@ -7,6 +7,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 from ML.xjtupy.ml.linearRegression.gradientDescent import GradientDescent
 
@@ -18,9 +19,7 @@ if __name__ == '__main__':
     y = data['y']
     x = np.array(x, dtype=float)
     y = np.array(y, dtype=float)
-    # 步长
-    stepSize = 0.001
-    g = GradientDescent(stepSize)
+    g = GradientDescent(ridge=True)
     t0, t1, t2 = g.gradient_descent(x, y)
     # 给出待预测的特征（4个），并求得预测值
     predict_x = pd.DataFrame([[0, 0], [0, 11], [11, 0], [11, 11]])
