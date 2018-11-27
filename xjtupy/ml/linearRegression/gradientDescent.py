@@ -27,9 +27,10 @@ class GradientDescent(object):
 
     def sum_of_gradient(self, sample, true_value, thetas, dimension):
         """
+        损失函数梯度和
         :param sample: 给定训练数据
         :param true_value: 真实输出值
-        :param thetas: 训练参数
+        :param thetas: 训练参数,theta0放在最前面
         :param dimension: 数据维度，其中默认x0=1
         :return: 损失函数对参数求偏导
         """
@@ -105,7 +106,7 @@ class GradientDescent(object):
     def squared_distance(v, w):
         return np.dot(np.array(v) - np.array(w), np.array(v) - np.array(w))
 
-    def gradient_descent(self, sample, true_value, tolerance=0.000000001, min_cost=0.25, max_iter=1000000):
+    def gradient_descent(self, sample, true_value, tolerance=0.00000001, min_cost=0.25, max_iter=1000000):
         """梯度下降"""
         # 迭代次数
         iter = 0
@@ -120,7 +121,7 @@ class GradientDescent(object):
 
             # 更新参数
             next_thetas = self.step(thetas, gradient)
-            # 相邻两次参数更新值更接近
+            # 相邻两次参数更新值更接近，直到收敛到某个值
             if self.distance(next_thetas, thetas) < tolerance:
                 break
             thetas = next_thetas

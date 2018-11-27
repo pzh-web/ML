@@ -19,6 +19,7 @@ if __name__ == '__main__':
     y = data['y']
     x = np.array(x, dtype=float)
     y = np.array(y, dtype=float)
+    # 梯度下降法
     g = GradientDescent()
     # 习得参数
     params = g.gradient_descent(x, y)
