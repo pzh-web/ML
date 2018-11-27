@@ -24,15 +24,15 @@ if __name__ == '__main__':
     y = np.array(y, dtype=float)
     plt.grid()
     plt.plot(x, y, 'ro')
-    # # 梯度下降法
-    # g = GradientDescent()
-    # t0, t1 = g.gradient_descent(x, y)
-    # fx = t0 + t1 * x
-    # plt.plot(x, fx, 'g-', label='梯度下降法')
+    # 梯度下降法
+    g = GradientDescent(random=False, ridge=True)
+    t0, t1 = g.gradient_descent(x, y)
+    fx = t0 + t1 * x
+    plt.plot(x, fx, 'g-', label='梯度下降法-岭回归')
 
     # 正规方程法
     n = NormalEquation(True)
     fx = n.normal_equation_method(x, y)
-    plt.plot(x, fx, linestyle='--', color='blue', label='正规方程法')
+    plt.plot(x, fx, linestyle='--', color='blue', label='正规方程法-正则化')
     plt.legend(loc='lower right')
     plt.show()
