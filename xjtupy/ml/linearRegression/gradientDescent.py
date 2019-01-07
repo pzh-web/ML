@@ -7,19 +7,19 @@
 import math
 import numpy as np
 
-'''
+"""
 梯度下降算法实现
-'''
+"""
 
 
 class GradientDescent(object):
     def __init__(self, learn_rate=0.001, random=True, ridge=False, ridge_param=2):
-        '''
+        """
         :param learn_rate: 梯度下降算法的步长
         :param random: 是否使用随机梯度下降算法
         :param ridge: 是否使用岭回归
         :param ridge_param: 正则化参数
-        '''
+        """
         self.learn_rate = learn_rate
         self.random = random
         self.ridge_param = ridge_param
@@ -79,13 +79,13 @@ class GradientDescent(object):
         return np.array(thetas) - self.learn_rate * np.array(direction)
 
     def cost_function(self, sample, true_value, params):
-        '''
+        """
         代价函数
         :param sample: 样本
         :param true_value: 样本实际输出值
         :param params: 当前参数
         :return: 返回当前代价
-        '''
+        """
         sample_num = len(sample)
         cost = 0
         b = np.ones(sample_num)
@@ -104,14 +104,17 @@ class GradientDescent(object):
 
     @staticmethod
     def squared_distance(v, w):
+        """
+        两点之间的欧式距离
+        """
         return np.dot(np.array(v) - np.array(w), np.array(v) - np.array(w))
 
     def gradient_descent(self, sample, true_value, tolerance=0.00000001, min_cost=0.25, max_iter=1000000):
         """梯度下降"""
-        # 迭代次数
+        # 迭代次数value
         iter = 0
         # 初始化参数,将b视为theta0
-        thetas = [0 for i in np.arange(0, len(sample[0]) + 1)]
+        thetas = np.zeros(len(sample[0]) + 1)
         while True:
             # 代价函数对参数求导
             gradient = self.sum_of_gradient(sample, true_value, thetas, len(thetas))

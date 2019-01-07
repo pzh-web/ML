@@ -2,9 +2,10 @@
 # -*- coding:utf-8 -*-
 # @Time  : 2018/11/27 21:24
 # @Author: peng yang
-# @File  : classifyFlower.py
+# @File  : binaryClassification.py
 import matplotlib
 import numpy as np
+import matplotlib.pyplot as plt
 
 from ML.xjtupy.ml.logisticRegression.logisticRegression import LogisticRegression
 
@@ -19,9 +20,10 @@ if __name__ == '__main__':
     matplotlib.rcParams['axes.unicode_minus'] = False
 
     # 二分类问题
-    path = 'flower.data'
-    # 使用numpy读入花的数据
-    data = np.loadtxt(path, dtype=float, delimiter=',', converters={4: iris_type})
+    train_path = 'horseColicTraining.txt'
+    test_path = 'horseColicTest.txt'
+    # 使用numpy读入马训练的数据
+    data = np.loadtxt(train_path, dtype=float, delimiter=',')
     # 取出相应的属性值和类别值
     '''
     split(ary, indices_or_sections, axis=0) 
@@ -31,5 +33,15 @@ if __name__ == '__main__':
     indices_or_sections:如果是一个整数，就用该数平均切分，如果是一个数组，为沿轴切分的位置 
     axis：沿着哪个维度进行切向，默认为0，横向切分
     '''
-    x, y = np.split(data, (4,), axis=1)
-    l = LogisticRegression()
+    train_x, train_y = np.split(data, (21,), axis=1)
+    logisticR = LogisticRegression()
+    beta = logisticR.newton_method(train_x, train_y)
+
+    # 测试
+    test_path = 'horseColicTest.txt'
+    data = np.loadtxt(test_path, dtype=float, delimiter=',')
+    test_x, test_y = np.split(data, (21,), axis=1)
+    predict_result = logisticR.predict(test_x, test_y)
+    color = ['or', 'ob']
+    plt.scatter(test_x[:, 3], test_x[:, 4], c=np.squeeze(predict_result))
+    plt.show()

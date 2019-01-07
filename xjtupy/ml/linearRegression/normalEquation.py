@@ -25,7 +25,7 @@ class NormalEquation(object):
 
     def not_normal(self, x, y):
         '''
-        不适用正则化项
+        不使用正则化项
         求 w=(x.T*x).I*x.T*y
         '''
         b = np.ones(len(x))
