@@ -70,12 +70,12 @@ class LogisticRegression(object):
         x = np.insert(x, 0, values=b, axis=1)
         # 行数
         row_num = len(x)
-        count = 0
+        success = 0
         for i in range(row_num):
             predict_value = 1 if self.sigmoid(np.dot(self.beta, x[i])) > 0.5 else 0
             predict_result.append(predict_value)
             if predict_value == y[i]:
-                count += 1
-        accuracy = float(count) / row_num
-        print("预测正确：%d条，准确率：%f" % (count, accuracy))
+                success += 1
+        accuracy = float(success) / row_num
+        print("预测正确：%d条，准确率：%f" % (success, accuracy))
         return predict_result

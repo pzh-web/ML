@@ -42,6 +42,21 @@ if __name__ == '__main__':
     data = np.loadtxt(test_path, dtype=float, delimiter=',')
     test_x, test_y = np.split(data, (21,), axis=1)
     predict_result = logisticR.predict(test_x, test_y)
-    color = ['or', 'ob']
-    plt.scatter(test_x[:, 3], test_x[:, 4], c=np.squeeze(predict_result))
+    plt.figure(figsize=(8, 6), dpi=100)
+    # plt.title('logistic回归，二分类')
+    # 红：0；蓝：1
+    color = ['r', 'b', 'g']
+    ax1 = plt.subplot(2, 1, 1)
+    ax1.set_title('原始结果')
+    ax1.scatter(test_x[:, 3], test_x[:, 4], c=[color[int(i[0])] for i in test_y], marker='o')
+    # 错误点显示
+    error_dot = []
+    for x, y in zip(test_y, predict_result):
+        if int(x[0]) != y:
+            error_dot.append(2)
+        else:
+            error_dot.append(y)
+    ax2 = plt.subplot(2, 1, 2)
+    ax2.set_title('预测结果')
+    ax2.scatter(test_x[:, 3], test_x[:, 4], c=[color[i] for i in error_dot], marker='^')
     plt.show()
