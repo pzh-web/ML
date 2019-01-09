@@ -6,6 +6,7 @@
 import numpy as np
 
 from ML.xjtupy.ml.util.matrixOperator import MatrixOperator
+from ML.xjtupy.ml.util.vectorOperator import VectorOperator
 
 """
 线性判别分析
@@ -35,17 +36,6 @@ class LinearDiscriminantAnalysis(object):
             result += np.dot(bias.reshape(n, 1), bias.reshape(1, n))
         return result / m
 
-    def distance(self, v, w):
-        """两点的距离"""
-        return np.math.sqrt(self.squared_distance(v, w))
-
-    @staticmethod
-    def squared_distance(v, w):
-        """
-        两点之间的欧式距离
-        """
-        return np.dot(np.array(v) - np.array(w), np.array(v) - np.array(w))
-
     def get_weight(self, x, y):
         """
         求解投影直线的参数W
@@ -73,7 +63,7 @@ class LinearDiscriminantAnalysis(object):
         m, n = np.shape(test_x)
         for i in range(m):
             # 判断每个样本到两类样本均值向量的距离，划分到最近的类别
-            if self.distance(test_x[i], self.u0) > self.distance(test_x[i], self.u1):
+            if VectorOperator.distance(test_x[i], self.u0) > VectorOperator.distance(test_x[i], self.u1):
                 predict_result.append(1)
             else:
                 predict_result.append(0)

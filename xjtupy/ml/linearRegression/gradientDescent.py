@@ -7,6 +7,8 @@
 import math
 import numpy as np
 
+from ML.xjtupy.ml.util.vectorOperator import VectorOperator
+
 """
 梯度下降算法实现
 """
@@ -98,17 +100,6 @@ class GradientDescent(object):
             cost = cost + np.dot(err.T, err)
         return 1.0 / (2 * sample_num) * cost
 
-    def distance(self, v, w):
-        """两点的距离"""
-        return math.sqrt(self.squared_distance(v, w))
-
-    @staticmethod
-    def squared_distance(v, w):
-        """
-        两点之间的欧式距离
-        """
-        return np.dot(np.array(v) - np.array(w), np.array(v) - np.array(w))
-
     def gradient_descent(self, sample, true_value, tolerance=0.00000001, min_cost=0.25, max_iter=1000000):
         """梯度下降"""
         # 迭代次数value
@@ -125,7 +116,7 @@ class GradientDescent(object):
             # 更新参数
             next_thetas = self.step(thetas, gradient)
             # 相邻两次参数更新值更接近，直到收敛到某个值
-            if self.distance(next_thetas, thetas) < tolerance:
+            if VectorOperator.distance(next_thetas, thetas) < tolerance:
                 break
             thetas = next_thetas
             # 更新学习率
