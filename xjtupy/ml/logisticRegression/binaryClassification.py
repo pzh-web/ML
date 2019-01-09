@@ -38,7 +38,7 @@ if __name__ == '__main__':
     # 牛顿法
     # beta = logisticR.newton_method(train_x, train_y)
     # 随机梯度法
-    beta = logisticR.gradient_descend(train_x, train_y)
+    beta = logisticR.newton_method(train_x, train_y)
 
     # 测试
     test_path = 'horseColicTest.txt'
