@@ -5,6 +5,8 @@
 # @File  : linearDiscriminantAnalysis.py
 import numpy as np
 
+from ML.xjtupy.ml.util.matrixOperator import MatrixOperator
+
 """
 线性判别分析
 """
@@ -55,12 +57,13 @@ class LinearDiscriminantAnalysis(object):
         class0 = [x[i] for i in np.where(y == 0)[0]]
         class1 = [x[i] for i in np.where(y == 1)[0]]
         # 求各类样本均值向量
-        self.u0 = np.mean(class0, axis=0)
-        self.u1 = np.mean(class1, axis=0)
+        self.u0 = MatrixOperator.mean_row(class0)
+        self.u1 = MatrixOperator.mean_row(class1)
         # 求各类样本的协方差矩阵
         s0 = self.get_cov_matrix(class0, self.u0)
         s1 = self.get_cov_matrix(class1, self.u1)
-        self.w = np.mat(s0 + s1).I * (self.u0 - self.u1).reshape(21, 1)
+        Sw = np.mat(s0 + s1)
+        self.w = Sw.I * (self.u0 - self.u1).reshape(21, 1)
 
     def predict(self, test_x, test_y):
         """
