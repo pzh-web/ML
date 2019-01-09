@@ -46,7 +46,7 @@ class MutilLR(LogisticRegression):
                 predict_result.append(4)
             else:
                 # 预测类别
-                predict_classify = predict_value.index(1)+1
+                predict_classify = predict_value.index(1) + 1
                 predict_result.append(predict_classify)
                 if predict_classify == y[i]:
                     success += 1
