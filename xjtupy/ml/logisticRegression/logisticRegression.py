@@ -25,9 +25,9 @@ class LogisticRegression(object):
         """
         return 1.0 / (1 + np.exp(-x))
 
-    def newton_method(self, x, y, iter=50):
+    def newton_method(self, x, y, iter_num=50):
         """
-        牛顿法
+        牛顿法：收敛速度快
         """
         # 在样本值向量前面增加一列(1;x)
         b = np.ones(len(x))
@@ -35,13 +35,11 @@ class LogisticRegression(object):
         # 初始化参数
         self.beta = np.zeros(len(x[0]), dtype=float)
 
-        # 行数
-        row_num = len(x)
-        # 列数
-        column_num = len(x[0])
+        # 行数、列数
+        row_num, column_num = np.shape(x)
 
         # 使用牛顿法，直至beta收敛
-        for it in range(iter):
+        for it in range(iter_num):
             # 一阶导的值
             first_derivative = np.zeros(column_num)
             # 二阶导的值,单特征的时候是一个值，多特征是一个hessian矩阵
@@ -59,6 +57,23 @@ class LogisticRegression(object):
             # 返回一个扁平（一维）的数组（ndarray）
             next_beta = next_beta.getA1()
             self.beta = next_beta
+
+    def gradient_descend(self, x, y, iter_num=1500):
+        """
+        随机梯度下降法
+        """
+        # 在样本值向量前面增加一列(1;x)
+        b = np.ones(len(x))
+        x = np.insert(x, 0, values=b, axis=1)
+        m, n = np.shape(x)
+        # 初始化参数
+        self.beta = np.random.rand(n)
+        for j in range(iter_num):
+            for i in range(m):  # 更新一个参数只需要一个样本
+                alpha = 4 / (1 + i + j) + 0.003  # 保证多次迭代后新数据仍然有影响力
+                h = self.sigmoid(np.dot(x[i], self.beta))  # 数值计算
+                error = h - y[i]
+                self.beta = self.beta - alpha * error * x[i]
 
     def predict(self, x, y):
         """

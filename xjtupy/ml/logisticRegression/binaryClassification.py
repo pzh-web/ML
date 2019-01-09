@@ -35,18 +35,21 @@ if __name__ == '__main__':
     '''
     train_x, train_y = np.split(data, (21,), axis=1)
     logisticR = LogisticRegression()
-    beta = logisticR.newton_method(train_x, train_y)
+    # 牛顿法
+    # beta = logisticR.newton_method(train_x, train_y)
+    # 随机梯度法
+    beta = logisticR.gradient_descend(train_x, train_y)
 
     # 测试
     test_path = 'horseColicTest.txt'
     data = np.loadtxt(test_path, dtype=float, delimiter=',')
     test_x, test_y = np.split(data, (21,), axis=1)
     predict_result = logisticR.predict(test_x, test_y)
-    plt.figure(figsize=(8, 6), dpi=100)
-    # plt.title('logistic回归，二分类')
+    plt.figure(figsize=(12, 5), dpi=100)
     # 红：0；蓝：1
     color = ['r', 'b', 'g']
-    ax1 = plt.subplot(2, 1, 1)
+    plt.title("随机梯度下降法")
+    ax1 = plt.subplot(1, 2, 1)
     ax1.set_title('原始结果')
     ax1.scatter(test_x[:, 3], test_x[:, 4], c=[color[int(i[0])] for i in test_y], marker='o')
     # 错误点显示
@@ -56,7 +59,7 @@ if __name__ == '__main__':
             error_dot.append(2)
         else:
             error_dot.append(y)
-    ax2 = plt.subplot(2, 1, 2)
-    ax2.set_title('预测结果')
-    ax2.scatter(test_x[:, 3], test_x[:, 4], c=[color[i] for i in error_dot], marker='^')
+    ax2 = plt.subplot(1, 2, 2)
+    ax2.set_title('预测结果（绿色点为错误点）')
+    ax2.scatter(test_x[:, 3], test_x[:, 4], c=[color[i] for i in error_dot], marker='o')
     plt.show()
