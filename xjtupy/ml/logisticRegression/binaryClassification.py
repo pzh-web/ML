@@ -48,7 +48,6 @@ if __name__ == '__main__':
     plt.figure(figsize=(12, 5), dpi=100)
     # 红：0；蓝：1
     color = ['r', 'b', 'g']
-    plt.title("随机梯度下降法")
     ax1 = plt.subplot(1, 2, 1)
     ax1.set_title('原始结果')
     ax1.scatter(test_x[:, 3], test_x[:, 4], c=[color[int(i[0])] for i in test_y], marker='o')

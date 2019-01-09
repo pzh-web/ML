@@ -57,6 +57,7 @@ class LogisticRegression(object):
             # 返回一个扁平（一维）的数组（ndarray）
             next_beta = next_beta.getA1()
             self.beta = next_beta
+        return self.beta
 
     def gradient_descend(self, x, y, iter_num=1500):
         """
@@ -74,6 +75,7 @@ class LogisticRegression(object):
                 h = self.sigmoid(np.dot(x[i], self.beta))  # 数值计算
                 error = h - y[i]
                 self.beta = self.beta - alpha * error * x[i]
+        return self.beta
 
     def predict(self, x, y):
         """
