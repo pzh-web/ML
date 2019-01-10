@@ -63,7 +63,8 @@ class LinearDiscriminantAnalysis(object):
         m, n = np.shape(test_x)
         for i in range(m):
             # 判断每个样本到两类样本均值向量的距离，划分到最近的类别
-            if VectorOperator.distance(test_x[i], self.u0) > VectorOperator.distance(test_x[i], self.u1):
+            if VectorOperator.distance(np.dot(test_x[i], self.w), np.dot(self.u0, self.w)) > VectorOperator.distance(
+                    np.dot(test_x[i], self.w), np.dot(self.u1, self.w)):
                 predict_result.append(1)
             else:
                 predict_result.append(0)
