@@ -27,14 +27,14 @@ if __name__ == '__main__':
     y, x = np.split(data, (-8,), axis=1)
     mutilLDA = MutilLDA()
     # 训练数据
-    train_x = x[-4100:, :]
-    train_y = y[-4100:]
+    train_x = x[:4100, :]
+    train_y = y[:4100]
     # 获取类别
     mutilLDA.get_category(train_y)
     mutilLDA.get_weight(train_x, train_y, 3)
     # 测试数据
-    test_x = x[:-4100, :]
-    test_y = y[:-4100]
+    test_x = x[4100:, :]
+    test_y = y[4100:]
     predict_result = mutilLDA.predict_mutil(test_x, test_y)
     plt.figure(figsize=(12, 5), dpi=100)
     # 分别对应：1. 2. 3. 这几个类别

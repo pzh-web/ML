@@ -26,7 +26,7 @@ class MutilLR(LogisticRegression):
         for i in self.category:
             classify_y = [1 if i == j else 0 for j in y]
             # 训练当前分类器，即获得参数
-            self.classifiers.append(self.newton_method(x, classify_y))
+            self.classifiers.append(self.gradient_descend(x, classify_y))
 
     def predict(self, x, y):
         """

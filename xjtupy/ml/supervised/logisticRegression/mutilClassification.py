@@ -26,14 +26,14 @@ if __name__ == '__main__':
     y, x = np.split(data, (-8,), axis=1)
     mutilLR = MutilLR()
     # 训练数据
-    train_x = x[-4100:, :]
-    train_y = y[-4100:]
+    train_x = x[:4100, :]
+    train_y = y[:4100]
     # 获取类别
     mutilLR.get_category(train_y)
     mutilLR.one_vs_rest(train_x, train_y)
     # 测试数据
-    test_x = x[:-4100, :]
-    test_y = y[:-4100]
+    test_x = x[4100:, :]
+    test_y = y[4100:]
     predict_result = mutilLR.predict(test_x, test_y)
     print(predict_result)
     plt.figure(figsize=(12, 5), dpi=100)
