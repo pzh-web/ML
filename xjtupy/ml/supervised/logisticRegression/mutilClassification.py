@@ -3,35 +3,37 @@
 # @Time  : 2018/11/27 21:24
 # @Author: peng yang
 # @File  : mutilClassification.py
+
+from ML.xjtupy.ml.supervised.logisticRegression.mutilLR import MutilLR
 import matplotlib
 import numpy as np
 import matplotlib.pyplot as plt
 
-from ML.xjtupy.ml.logisticRegression.logisticRegression import LogisticRegression
-from ML.xjtupy.ml.logisticRegression.mutilLR import MutilLR
-import matplotlib
-import numpy as np
-import matplotlib.pyplot as plt
+
+def abalone_type(s):
+    it = {b'M': 1, b'F': 2, b'I': 3}
+    return it[s]
+
 
 if __name__ == '__main__':
     matplotlib.rcParams['font.sans-serif'] = [u'SimHei']  # FangSong/黑体 FangSong/KaiTi
     matplotlib.rcParams['axes.unicode_minus'] = False
 
     # 多分类问题
-    train_path = 'glass.data'
-    # 使用numpy读入花的数据，第四列使用iris_type单独处理
-    data = np.loadtxt(train_path, dtype=float, delimiter=',')
-    x, y = np.split(data, (10,), axis=1)
+    train_path = 'abalone.data'
+    # 使用numpy读入鲍鱼的数据
+    data = np.loadtxt(train_path, dtype=float, delimiter=',', converters={0: abalone_type})
+    y, x = np.split(data, (-8,), axis=1)
     mutilLR = MutilLR()
     # 训练数据
-    train_x = x[:-24, 1:]
-    train_y = y[:-24]
+    train_x = x[-4100:, :]
+    train_y = y[-4100:]
     # 获取类别
     mutilLR.get_category(train_y)
     mutilLR.one_vs_rest(train_x, train_y)
     # 测试数据
-    test_x = x[-24:, 1:]
-    test_y = y[-24:]
+    test_x = x[:-4100, :]
+    test_y = y[:-4100]
     predict_result = mutilLR.predict(test_x, test_y)
     print(predict_result)
     plt.figure(figsize=(12, 5), dpi=100)

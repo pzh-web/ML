@@ -8,8 +8,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from ML.xjtupy.ml.linearRegression.gradientDescent import GradientDescent
-from ML.xjtupy.ml.linearRegression.normalEquation import NormalEquation
+from ML.xjtupy.ml.supervised.linearRegression.gradientDescent import GradientDescent
+from ML.xjtupy.ml.supervised.linearRegression.normalEquation import NormalEquation
 
 if __name__ == '__main__':
     matplotlib.rcParams['font.sans-serif'] = [u'SimHei']  # FangSong/黑体 FangSong/KaiTi

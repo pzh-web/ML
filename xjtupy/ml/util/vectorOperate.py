@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 # @Time  : 2019/1/9 21:51
 # @Author: peng yang
-# @File  : vectorOperator.py
+# @File  : vectorOperate.py
 import numpy as np
 
 """
@@ -10,12 +10,12 @@ import numpy as np
 """
 
 
-class VectorOperator(object):
+class VectorOperate(object):
 
     @staticmethod
     def distance(v, w):
         """两点的距离"""
-        return np.math.sqrt(VectorOperator.squared_distance(v, w))
+        return np.math.sqrt(VectorOperate.squared_distance(v, w))
 
     @staticmethod
     def squared_distance(v, w):

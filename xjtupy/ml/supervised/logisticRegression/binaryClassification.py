@@ -2,18 +2,12 @@
 # -*- coding:utf-8 -*-
 # @Time  : 2018/11/27 21:24
 # @Author: peng yang
-# @File  : binaryClassification.py
+# @File  : binaryClassificationLDA.py
 import matplotlib
 import numpy as np
 import matplotlib.pyplot as plt
 
-from ML.xjtupy.ml.logisticRegression.logisticRegression import LogisticRegression
-
-
-def iris_type(s):
-    it = {b'Iris-setosa': 0, b'Iris-versicolor': 1, b'Iris-virginica': 2}
-    return it[s]
-
+from ML.xjtupy.ml.supervised.logisticRegression.logisticRegression import LogisticRegression
 
 if __name__ == '__main__':
     matplotlib.rcParams['font.sans-serif'] = [u'SimHei']  # FangSong/黑体 FangSong/KaiTi

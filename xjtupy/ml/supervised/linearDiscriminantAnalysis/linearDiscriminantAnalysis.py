@@ -5,8 +5,8 @@
 # @File  : linearDiscriminantAnalysis.py
 import numpy as np
 
-from ML.xjtupy.ml.util.matrixOperator import MatrixOperator
-from ML.xjtupy.ml.util.vectorOperator import VectorOperator
+from ML.xjtupy.ml.util.matrixOperate import MatrixOperate
+from ML.xjtupy.ml.util.vectorOperate import VectorOperate
 
 """
 线性判别分析
@@ -38,7 +38,7 @@ class LinearDiscriminantAnalysis(object):
 
     def get_weight(self, x, y):
         """
-        求解投影直线的参数W
+        求二分类解投影直线的参数W
         w = (s0+s1).I*(u0 - u1)
         s0、s1：两类样本的协方差矩阵
         u0、u1：两类样本的均值向量
@@ -47,15 +47,16 @@ class LinearDiscriminantAnalysis(object):
         class0 = [x[i] for i in np.where(y == 0)[0]]
         class1 = [x[i] for i in np.where(y == 1)[0]]
         # 求各类样本均值向量
-        self.u0 = MatrixOperator.mean_row(class0)
-        self.u1 = MatrixOperator.mean_row(class1)
+        self.u0 = MatrixOperate.mean_row(class0)
+        self.u1 = MatrixOperate.mean_row(class1)
         # 求各类样本的协方差矩阵
         s0 = self.get_cov_matrix(class0, self.u0)
         s1 = self.get_cov_matrix(class1, self.u1)
+        # 类内散度矩阵
         Sw = np.mat(s0 + s1)
         self.w = Sw.I * (self.u0 - self.u1).reshape(21, 1)
 
-    def predict(self, test_x, test_y):
+    def predict_binary(self, test_x, test_y):
         """
         预测样本
         """
@@ -63,7 +64,7 @@ class LinearDiscriminantAnalysis(object):
         m, n = np.shape(test_x)
         for i in range(m):
             # 判断每个样本到两类样本均值向量的距离，划分到最近的类别
-            if VectorOperator.distance(np.dot(test_x[i], self.w), np.dot(self.u0, self.w)) > VectorOperator.distance(
+            if VectorOperate.distance(np.dot(test_x[i], self.w), np.dot(self.u0, self.w)) > VectorOperate.distance(
                     np.dot(test_x[i], self.w), np.dot(self.u1, self.w)):
                 predict_result.append(1)
             else:

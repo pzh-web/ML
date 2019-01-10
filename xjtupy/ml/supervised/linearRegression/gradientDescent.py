@@ -4,10 +4,9 @@
 # @Author: peng yang
 # @File  : gradientDescent.py
 
-import math
 import numpy as np
 
-from ML.xjtupy.ml.util.vectorOperator import VectorOperator
+from ML.xjtupy.ml.util.vectorOperate import VectorOperator
 
 """
 梯度下降算法实现

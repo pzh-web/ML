@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 # @Time  : 2019/1/9 21:30
 # @Author: peng yang
-# @File  : matrixOperator.py
+# @File  : matrixOperate.py
 import numpy as np
 
 """
@@ -10,7 +10,7 @@ import numpy as np
 """
 
 
-class MatrixOperator(object):
+class MatrixOperate(object):
 
     @staticmethod
     def svd(matrix):

@@ -2,13 +2,13 @@
 # -*- coding:utf-8 -*-
 # @Time  : 2019/1/9 16:35
 # @Author: peng yang
-# @File  : binaryClassification.py
+# @File  : binaryClassificationLDA.py
 
 import matplotlib
 import numpy as np
 import matplotlib.pyplot as plt
 
-from ML.xjtupy.ml.linearDiscriminantAnalysis.linearDiscriminantAnalysis import LinearDiscriminantAnalysis
+from ML.xjtupy.ml.supervised.linearDiscriminantAnalysis.linearDiscriminantAnalysis import LinearDiscriminantAnalysis
 
 if __name__ == '__main__':
     matplotlib.rcParams['font.sans-serif'] = [u'SimHei']  # FangSong/黑体 FangSong/KaiTi
@@ -16,7 +16,6 @@ if __name__ == '__main__':
 
     # 二分类问题
     train_path = 'horseColicTraining.txt'
-    test_path = 'horseColicTest.txt'
     # 使用numpy读入马训练的数据
     data = np.loadtxt(train_path, dtype=float, delimiter=',')
     # 取出相应的属性值和类别值
@@ -28,7 +27,7 @@ if __name__ == '__main__':
     test_path = 'horseColicTest.txt'
     data = np.loadtxt(test_path, dtype=float, delimiter=',')
     test_x, test_y = np.split(data, (21,), axis=1)
-    predict_result = LDA.predict(test_x, test_y)
+    predict_result = LDA.predict_binary(test_x, test_y)
     plt.figure(figsize=(12, 5), dpi=100)
     # 红：0；蓝：1
     color = ['r', 'b', 'g']
@@ -45,4 +44,8 @@ if __name__ == '__main__':
     ax2 = plt.subplot(1, 2, 2)
     ax2.set_title('预测结果（绿色点为错误点）')
     ax2.scatter(test_x[:, 3], test_x[:, 4], c=[color[i] for i in error_dot], marker='o')
+    # 投影直线
+    x = test_x[:, 3:4]
+    y = x * LDA.w[3:4]
+    plt.plot(x, y, color='m')
     plt.show()
