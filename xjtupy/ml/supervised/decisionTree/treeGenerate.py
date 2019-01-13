@@ -5,6 +5,8 @@
 # @File  : treeGenerate.py
 import numpy as np
 
+from ML.xjtupy.ml.util.strOperate import StrOperate
+
 """
 决策树生成
 """
@@ -12,34 +14,58 @@ import numpy as np
 
 class TreeGenerate(object):
 
+    def __init__(self, data):
+        self.__data = data
+        self.is_continuity = False
+
     def tree_generate(self, D, A):
         """
         :param D: 数据集 {（x1,y1）,(x2,y2),...,(xm,ym)}
         :param A: 属性集 {a1,a2,...,ad}
         :return: 决策树
         """
-        # 判断D中样本是不是属于同一类
+        # 第一个返回条件：判断D中样本是不是属于同一类
         if D[:, -1].tolist().count(D[:, -1][0]) == len(D):
             return D[:, -1][0]
 
+        # 第二个返回条件：属性集为空
         if len(A) == 0:
             return self.most_category(D)
 
         # 选择最优属性:对应原始索引
         # optimalAttrIndex, cur_index = self.ID3(D, A)
-        optimalAttrIndex, cur_index = self.C4_5(D, A)
-        # optimalAttrIndex, cur_index = self.CATR(D, A)
+        # optimalAttrIndex, cur_index = self.C4_5(D, A)
+        optimalAttrIndex, cur_index, threshold = self.CATR(D, A)
         # 生成一个节点
         optimalAttr = A[cur_index].split('_')[0]
         tree = {optimalAttr: {}}
-        # 从属性集合中删除最优属性
-        A.remove(A[cur_index])
-        # 遍历当前属性的所有取值
-        for attrValue in np.unique(D[:, optimalAttrIndex]):
+        if self.is_continuity:
             sub_labels = A[:]
-            # 递归生成决策树
-            tree[optimalAttr][attrValue] = self.tree_generate(
-                self.split_data_set(D, optimalAttrIndex, attrValue), sub_labels)
+            d1 = np.array([row for index, row in enumerate(D) if float(D[index][optimalAttrIndex]) > threshold])
+            d2 = np.array([row for index, row in enumerate(D) if float(D[index][optimalAttrIndex]) < threshold])
+            if len(d1) == 0:
+                tree[optimalAttr]['%s>=%s' % (optimalAttr, str(threshold))] = self.most_category(D)
+            else:
+                tree[optimalAttr]['%s>=%s' % (optimalAttr, str(threshold))] = self.tree_generate(d1, sub_labels)
+            if len(d2) == 0:
+                tree[optimalAttr]['%s<%s' % (optimalAttr, str(threshold))] = self.most_category(D)
+            else:
+                tree[optimalAttr]['%s<%s' % (optimalAttr, str(threshold))] = self.tree_generate(d2, sub_labels)
+        else:
+            # 从属性集合中删除最优属性
+            A.remove(A[cur_index])
+            # 遍历当前属性的所有取值
+            for attrValue in np.unique(self.__data[:, optimalAttrIndex]):
+                # 划分数据
+                child_D = self.split_data_set(D, optimalAttrIndex, attrValue)
+                # 第三个返回条件：当前属性取值在数据集中没有相应数据
+                if len(child_D) == 0:
+                    # 将父节点属性集中最多的类别标记为当前节点类别
+                    tree[optimalAttr][attrValue] = self.most_category(D)
+                else:
+                    sub_labels = A[:]
+                    # 递归生成决策树
+                    tree[optimalAttr][attrValue] = self.tree_generate(child_D, sub_labels)
         return tree
 
     def ID3(self, D, A):
@@ -122,27 +148,56 @@ class TreeGenerate(object):
     def CATR(self, D, A):
         """
         使用基尼指数选择最优属性
+        加入连续属性的划分
         """
         # 原始属性集的索引
         optimalAttrIndex = 0
         # 删除某些属性之后的索引
         optimalCurAttrIndex = 0
+        # 划分阈值
+        threshold = 0
         # 获取最优属性索引
         gini_index = 9999999
         for cur_index, attr in enumerate(A):
             original_index = int(attr.split('_')[1])
-            attrs = np.unique(D[:, original_index])
             gini_value_sum = 0
-            for attr in attrs:
-                cur_data = self.split_data_set(D, original_index, attr)
-                # 计算当前属性在当前取值下的基尼值
-                cur_gini_value = self.cal_gini_index(cur_data)
-                gini_value_sum += len(cur_data) / len(D) * cur_gini_value
-            if gini_value_sum < gini_index:
-                gini_index = gini_value_sum
-                optimalAttrIndex = original_index
-                optimalCurAttrIndex = cur_index
-        return optimalAttrIndex, optimalCurAttrIndex
+            # 在当前数据集下判断是否是连续属性
+            if StrOperate.is_number(D[0][original_index]):  # 连续的
+                # 按当前属性排序
+                D = D[D[:, original_index].argsort()]
+                divid_t = []
+                cur_attr_value = D[:, original_index].tolist()
+                for i in range(len(cur_attr_value) - 1):
+                    divid_t.append((float(cur_attr_value[i]) + float(cur_attr_value[i + 1])) / 2)
+                for j in range(len(divid_t)):
+                    if j > 0 and divid_t[j - 1] == divid_t[j]:
+                        continue
+                    # 按当前阈值划分数据集
+                    d1 = np.array([row for index, row in enumerate(D) if float(D[index][original_index]) > divid_t[j]])
+                    d2 = np.array([row for index, row in enumerate(D) if float(D[index][original_index]) < divid_t[j]])
+                    # 计算当前属性在当前划分下的基尼值
+                    gini_value1 = self.cal_gini_index(d1)
+                    gini_value2 = self.cal_gini_index(d2)
+                    gini_value_sum = len(d1) / len(D) * gini_value1 + len(d2) / len(D) * gini_value2
+                    if gini_value_sum < gini_index:
+                        gini_index = gini_value_sum
+                        threshold = divid_t[j]
+                        optimalAttrIndex = original_index
+                        optimalCurAttrIndex = cur_index
+                        self.is_continuity = True
+            else:  # 离散的
+                attrs = np.unique(D[:, original_index])
+                for attr in attrs:
+                    cur_data = self.split_data_set(D, original_index, attr)
+                    # 计算当前属性在当前取值下的基尼值
+                    cur_gini_value = self.cal_gini_index(cur_data)
+                    gini_value_sum += len(cur_data) / len(D) * cur_gini_value
+                if gini_value_sum < gini_index:
+                    gini_index = gini_value_sum
+                    optimalAttrIndex = original_index
+                    optimalCurAttrIndex = cur_index
+                    self.is_continuity = False
+        return optimalAttrIndex, optimalCurAttrIndex, threshold
 
     def most_category(self, D):
         """
@@ -151,7 +206,7 @@ class TreeGenerate(object):
         category = ''
         num = 0
         for c in np.unique(D[:, -1]):
-            category = c if D[:, -1].tolist().count(c) > num else category
+            category = c if D[:, -1].tolist().count(c) >= num else category
             num = D[:, -1].tolist().count(c)
         return category
 
