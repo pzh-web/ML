@@ -33,9 +33,11 @@ class TreeGenerate(object):
             return self.most_category(D)
 
         # 选择最优属性:对应原始索引
-        # optimalAttrIndex, cur_index = self.ID3(D, A)
+        optimalAttrIndex, cur_index = self.ID3(D, A)
+        threshold = 0
         # optimalAttrIndex, cur_index = self.C4_5(D, A)
-        optimalAttrIndex, cur_index, threshold = self.CATR(D, A)
+        # 处理了连续属性
+        # optimalAttrIndex, cur_index, threshold = self.CATR(D, A)
         # 生成一个节点
         optimalAttr = A[cur_index].split('_')[0]
         tree = {optimalAttr: {}}
@@ -44,13 +46,13 @@ class TreeGenerate(object):
             d1 = np.array([row for index, row in enumerate(D) if float(D[index][optimalAttrIndex]) > threshold])
             d2 = np.array([row for index, row in enumerate(D) if float(D[index][optimalAttrIndex]) < threshold])
             if len(d1) == 0:
-                tree[optimalAttr]['%s>=%s' % (optimalAttr, str(threshold))] = self.most_category(D)
+                tree[optimalAttr]['大于%s' % str(threshold)] = self.most_category(D)
             else:
-                tree[optimalAttr]['%s>=%s' % (optimalAttr, str(threshold))] = self.tree_generate(d1, sub_labels)
+                tree[optimalAttr]['大于%s' % str(threshold)] = self.tree_generate(d1, sub_labels)
             if len(d2) == 0:
-                tree[optimalAttr]['%s<%s' % (optimalAttr, str(threshold))] = self.most_category(D)
+                tree[optimalAttr]['小于%s' % str(threshold)] = self.most_category(D)
             else:
-                tree[optimalAttr]['%s<%s' % (optimalAttr, str(threshold))] = self.tree_generate(d2, sub_labels)
+                tree[optimalAttr]['小于%s' % str(threshold)] = self.tree_generate(d2, sub_labels)
         else:
             # 从属性集合中删除最优属性
             A.remove(A[cur_index])
