@@ -59,7 +59,7 @@ class LogisticRegression(object):
             self.beta = next_beta
         return self.beta
 
-    def gradient_descend(self, x, y, iter_num=1500):
+    def gradient_descend(self, x, y, iter_num=2500):
         """
         随机梯度下降法
         """

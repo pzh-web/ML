@@ -16,6 +16,7 @@ class MutilLR(LogisticRegression):
     def __init__(self):
         self.category = []  # 类别
         self.classifiers = []  # 学得的分类器
+        self.zoom_rate = []  # 缩放比例，为防止类别不平衡导致的训练误差
 
     def one_vs_rest(self, x, y):
         """
@@ -25,8 +26,9 @@ class MutilLR(LogisticRegression):
         # 将每个类别分别作为正例，其余作为反例
         for i in self.category:
             classify_y = [1 if i == j else 0 for j in y]
+            self.zoom_rate.append(classify_y.count(0) / classify_y.count(1))
             # 训练当前分类器，即获得参数
-            self.classifiers.append(self.gradient_descend(x, classify_y))
+            self.classifiers.append(self.newton_method(x, classify_y))
 
     def predict(self, x, y):
         """
@@ -41,7 +43,10 @@ class MutilLR(LogisticRegression):
         success = 0
         for i in range(row_num):
             # 用多个分类器分别取预测，选择概率最大的那个
-            predict_value = [1 if self.sigmoid(np.dot(beta, x[i])) > 0.5 else 0 for beta in self.classifiers]
+            # 使用在缩放策略，防止类别不平衡导致的误差
+            predict_value = [
+                1 if (self.sigmoid(np.dot(beta, x[i])) / (1 - self.sigmoid(np.dot(beta, x[i])))) * rate > 1 else 0 for
+                beta, rate in zip(self.classifiers, self.zoom_rate)]
             # 处理预测数据
             if np.max(predict_value) == 0:  # 未预测出类别
                 predict_result.append(4)
