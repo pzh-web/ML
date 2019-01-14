@@ -80,8 +80,8 @@ class VisualDecisionTree(object):
                 self.plotMidText((self.plotTree['xOff'], self.plotTree['yOff']), cntrPt, str(key))
         self.plotTree['yOff'] = self.plotTree['yOff'] + 1.0 / self.plotTree['totalD']
 
-    def create_plot(self, inTree):
-        fig = plt.figure('决策树', facecolor='white')
+    def create_plot(self, inTree, name):
+        fig = plt.figure(name, facecolor='white')
         fig.clf()
         axprops = dict(xticks=[], yticks=[])
         self.createPlot['ax1'] = plt.subplot(111, frameon=False, **axprops)

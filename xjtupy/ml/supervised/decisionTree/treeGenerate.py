@@ -14,13 +14,20 @@ from ML.xjtupy.ml.util.strOperate import StrOperate
 
 class TreeGenerate(object):
 
-    def __init__(self, train_data, test_data, pre_pruning=False):
+    def __init__(self, train_data, test_data=None, pre_pruning=False):
         self.__train_data = train_data
         self.__test_data = test_data
         self.is_continuity = False  # 是否是连续值
         self.pre_pruning = pre_pruning  # 是否进行预剪枝
-        self.pre_precision = 0  # 划分前的精度
-        self.time = 1  # 预剪枝次数，主要用于区分首次划分
+
+        if pre_pruning:
+            # 第一次将节点划分为类别最多的一类,为进一步用属性划分提供划分前精度
+            for c in np.unique(train_data[:, -1]):
+                if len(np.where(train_data[:, -1] == c)[0]) >= (len(train_data) / 2):
+                    node_category = c
+                    break
+            # 验证集预测,划分前的精度
+            self.pre_precision = len(np.where(self.__test_data == node_category)[0]) / len(self.__test_data)
 
     def tree_generate(self, D, A, threshold=0):
         """
@@ -255,39 +262,34 @@ class TreeGenerate(object):
         :param attr_index: 当前划分属性
         :return: Boolean
         """
-        category = np.unique(D[:, -1])
-        node_category = ''
-        if self.time == 1:
-            # 第一次将节点划分为类别最多的一类
-            for c in category:
-                if len(np.where(D[:, -1] == c)[0]) >= (len(D) / 2):
+        right_count = 0
+        # 获取当前属性集的属性值
+        attr_values = np.unique(D[:, attr_index])
+        # 将属性集按照属性值划分，并标记每个属性值划分集合的类别
+        for attr_value in attr_values:
+            cur_classification = np.array(
+                [row for index, row in enumerate(D) if D[index][attr_index] == attr_value])
+            for c in np.unique(D[:, -1]):
+                if len(np.where(cur_classification[:, -1] == c)[0]) >= (len(cur_classification) / 2):
                     node_category = c
+                    # 验证集预测
+                    right_count += len([row for index, row in enumerate(self.__test_data)
+                                        if self.__test_data[index][attr_index] == attr_value
+                                        and self.__test_data[index][-1] == node_category
+                                        ])
                     break
-            # 验证集预测
-            cur_precision = len(np.where(self.__test_data == node_category)[0]) / len(self.__test_data)
-        else:
-            right_count = 0
-            # 获取当前属性集的属性值
-            attr_values = np.unique(D[:, attr_index])
-            # 将属性集按照属性值划分，并标记每个属性值划分集合的类别
-            for attr_value in attr_values:
-                cur_classification = np.array(
-                    [row for index, row in enumerate(D) if D[index][attr_index] == attr_value])
-                for c in category:
-                    if len(np.where(cur_classification[:, -1] == c)[0]) >= (len(D) / 2):
-                        node_category = c
-                        # 验证集预测
-                        right_count += len([row for index, row in enumerate(self.__test_data)
-                                            if self.__test_data[index][attr_index] == attr_value
-                                            and self.__test_data[index][-1] == node_category
-                                            ])
-                        break
-            cur_precision = right_count / len(self.__test_data)
-        self.time += 1
-        print(self.pre_precision)
-        print(cur_precision)
+        cur_precision = right_count / len(self.__test_data)
+        print('划分前的精度：%s' % self.pre_precision)
+        print('划分后的精度：%s' % cur_precision)
         if cur_precision > self.pre_precision:
             self.pre_precision = cur_precision
             return True
         else:
             return False
+
+    def post_pruning(self, tree):
+        """
+        后剪枝
+        :param tree: 生成的决策树
+        """
+        pass
