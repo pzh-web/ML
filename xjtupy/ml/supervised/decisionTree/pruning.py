@@ -17,7 +17,7 @@ if __name__ == '__main__':
     # 获取数据集
     train_d = data[1:11, [1, 2, 3, 4, 5, 6, 9]]
     test_d = data[11:, [1, 2, 3, 4, 5, 6, 9]]
-    treeGenerate = TreeGenerate(train_d)
+    treeGenerate = TreeGenerate(train_d, test_d, pre_pruning=True)
     tree = treeGenerate.tree_generate(train_d, A)
     # 绘制
     VisualDecisionTree().create_plot(tree)

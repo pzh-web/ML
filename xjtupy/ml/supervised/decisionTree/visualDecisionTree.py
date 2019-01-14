@@ -65,7 +65,7 @@ class VisualDecisionTree(object):
         depth = self.get_tree_depth(myTree)
         firstStr = list(myTree.keys())[0]
         cntrPt = (
-        self.plotTree['xOff'] + (1.0 + float(numLeafs)) / 2.0 / self.plotTree['totalW'], self.plotTree['yOff'])
+            self.plotTree['xOff'] + (1.0 + float(numLeafs)) / 2.0 / self.plotTree['totalW'], self.plotTree['yOff'])
         self.plotMidText(cntrPt, parentPt, nodeTxt)
         self.plotNode(firstStr, cntrPt, parentPt, self.decision_node)
         secondDict = myTree[firstStr]
@@ -81,7 +81,7 @@ class VisualDecisionTree(object):
         self.plotTree['yOff'] = self.plotTree['yOff'] + 1.0 / self.plotTree['totalD']
 
     def create_plot(self, inTree):
-        fig = plt.figure(1, facecolor='white')
+        fig = plt.figure('决策树', facecolor='white')
         fig.clf()
         axprops = dict(xticks=[], yticks=[])
         self.createPlot['ax1'] = plt.subplot(111, frameon=False, **axprops)

@@ -14,11 +14,15 @@ from ML.xjtupy.ml.util.strOperate import StrOperate
 
 class TreeGenerate(object):
 
-    def __init__(self, data):
-        self.__data = data
-        self.is_continuity = False
+    def __init__(self, train_data, test_data, pre_pruning=False):
+        self.__train_data = train_data
+        self.__test_data = test_data
+        self.is_continuity = False  # 是否是连续值
+        self.pre_pruning = pre_pruning  # 是否进行预剪枝
+        self.pre_precision = 0  # 划分前的精度
+        self.time = 1  # 预剪枝次数，主要用于区分首次划分
 
-    def tree_generate(self, D, A):
+    def tree_generate(self, D, A, threshold=0):
         """
         :param D: 数据集 {（x1,y1）,(x2,y2),...,(xm,ym)}
         :param A: 属性集 {a1,a2,...,ad}
@@ -34,12 +38,19 @@ class TreeGenerate(object):
 
         # 选择最优属性:对应原始索引
         optimalAttrIndex, cur_index = self.ID3(D, A)
-        threshold = 0
         # optimalAttrIndex, cur_index = self.C4_5(D, A)
         # 处理了连续属性
         # optimalAttrIndex, cur_index, threshold = self.CATR(D, A)
         # 生成一个节点
         optimalAttr = A[cur_index].split('_')[0]
+
+        ##########################################################
+        # 预剪枝
+        if self.pre_pruning:
+            if self.__pre_pruning(D, optimalAttrIndex) is False:
+                return self.most_category(D)
+        ##########################################################
+
         tree = {optimalAttr: {}}
         if self.is_continuity:
             sub_labels = A[:]
@@ -57,7 +68,7 @@ class TreeGenerate(object):
             # 从属性集合中删除最优属性
             A.remove(A[cur_index])
             # 遍历当前属性的所有取值
-            for attrValue in np.unique(self.__data[:, optimalAttrIndex]):
+            for attrValue in np.unique(self.__train_data[:, optimalAttrIndex]):
                 # 划分数据
                 child_D = self.split_data_set(D, optimalAttrIndex, attrValue)
                 # 第三个返回条件：当前属性取值在数据集中没有相应数据
@@ -236,3 +247,47 @@ class TreeGenerate(object):
         计算基尼指数
         """
         return 1 - np.sum([(D[:, -1].tolist().count(c) / len(D[:, -1])) ** 2 for c in np.unique(D[:, -1])])
+
+    def __pre_pruning(self, D, attr_index):
+        """
+        预剪枝函数
+        :param D: 当前划分节点属性集
+        :param attr_index: 当前划分属性
+        :return: Boolean
+        """
+        category = np.unique(D[:, -1])
+        node_category = ''
+        if self.time == 1:
+            # 第一次将节点划分为类别最多的一类
+            for c in category:
+                if len(np.where(D[:, -1] == c)[0]) >= (len(D) / 2):
+                    node_category = c
+                    break
+            # 验证集预测
+            cur_precision = len(np.where(self.__test_data == node_category)[0]) / len(self.__test_data)
+        else:
+            right_count = 0
+            # 获取当前属性集的属性值
+            attr_values = np.unique(D[:, attr_index])
+            # 将属性集按照属性值划分，并标记每个属性值划分集合的类别
+            for attr_value in attr_values:
+                cur_classification = np.array(
+                    [row for index, row in enumerate(D) if D[index][attr_index] == attr_value])
+                for c in category:
+                    if len(np.where(cur_classification[:, -1] == c)[0]) >= (len(D) / 2):
+                        node_category = c
+                        # 验证集预测
+                        right_count += len([row for index, row in enumerate(self.__test_data)
+                                            if self.__test_data[index][attr_index] == attr_value
+                                            and self.__test_data[index][-1] == node_category
+                                            ])
+                        break
+            cur_precision = right_count / len(self.__test_data)
+        self.time += 1
+        print(self.pre_precision)
+        print(cur_precision)
+        if cur_precision > self.pre_precision:
+            self.pre_precision = cur_precision
+            return True
+        else:
+            return False
