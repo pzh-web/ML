@@ -21,14 +21,14 @@ class MatrixOperate(object):
         return np.linalg.svd(matrix)
 
     @staticmethod
-    def mean_row(matrix):
+    def mean_column(matrix):
         """
-        按行求矩阵的均值
+        按列求矩阵的均值
         """
         return np.mean(matrix, axis=0)
 
     @staticmethod
-    def mean_column(matrix):
+    def mean_row(matrix):
         """
         按行求矩阵的均值
         """

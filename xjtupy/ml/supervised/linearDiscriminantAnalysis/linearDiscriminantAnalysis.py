@@ -47,8 +47,8 @@ class LinearDiscriminantAnalysis(object):
         class0 = [x[i] for i in np.where(y == 0)[0]]
         class1 = [x[i] for i in np.where(y == 1)[0]]
         # 求各类样本均值向量
-        self.u0 = MatrixOperate.mean_row(class0)
-        self.u1 = MatrixOperate.mean_row(class1)
+        self.u0 = MatrixOperate.mean_column(class0)
+        self.u1 = MatrixOperate.mean_column(class1)
         # 求各类样本的协方差矩阵
         s0 = self.get_cov_matrix(class0, self.u0)
         s1 = self.get_cov_matrix(class1, self.u1)

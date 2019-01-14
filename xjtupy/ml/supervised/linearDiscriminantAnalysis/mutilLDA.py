@@ -28,16 +28,16 @@ class MutilLDA(LinearDiscriminantAnalysis):
         for c in self.category:
             # 当前类的数据集
             data_c = [x[i] for i in np.where(y == c)[0]]
-            datai = data_c - MatrixOperate.mean_row(data_c)
+            datai = data_c - MatrixOperate.mean_column(data_c)
             Swi = np.mat(datai).T * np.mat(datai)
             Sw += Swi
         # 类间散度矩阵
         Sb = np.zeros(shape=(n, n))
         # 样本数据集的均值
-        u = MatrixOperate.mean_row(x)
+        u = t.mean_column(x)
         for c in self.category:
             data_c = [x[i] for i in np.where(y == c)[0]]
-            data_u = MatrixOperate.mean_row(data_c)
+            data_u = MatrixOperate.mean_column(data_c)
             self.cate_u.append(data_u)
             # 当前类别样本数
             num = np.shape(data_c)[0]

@@ -9,6 +9,10 @@ import numpy as np
 from ML.xjtupy.ml.supervised.decisionTree.treeGenerate import TreeGenerate
 from ML.xjtupy.ml.supervised.decisionTree.visualDecisionTree import VisualDecisionTree
 
+
+"""
+分类
+"""
 if __name__ == '__main__':
     path = 'watermelon.txt'
     # 使用numpy读入西瓜的数据

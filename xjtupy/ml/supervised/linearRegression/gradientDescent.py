@@ -6,7 +6,7 @@
 
 import numpy as np
 
-from ML.xjtupy.ml.util.vectorOperate import VectorOperator
+from ML.xjtupy.ml.util.vectorOperate import VectorOperate
 
 """
 梯度下降算法实现
@@ -115,7 +115,7 @@ class GradientDescent(object):
             # 更新参数
             next_thetas = self.step(thetas, gradient)
             # 相邻两次参数更新值更接近，直到收敛到某个值
-            if VectorOperator.distance(next_thetas, thetas) < tolerance:
+            if VectorOperate.distance(next_thetas, thetas) < tolerance:
                 break
             thetas = next_thetas
             # 更新学习率
