@@ -68,7 +68,7 @@ class MutilLDA(LinearDiscriminantAnalysis):
             cur_type = None
             # 计算与那个类别中心点投影距离最近
             for i in range(len(self.category)):
-                distance = VectorOperate.distance(low_dimension, np.dot(self.w.T, self.cate_u[i]))
+                distance = VectorOperate.distance(low_dimension, np.dot(self.w.T, self.cate_u[i ]))
                 if distance < lowest_distance:
                     lowest_distance = distance
                     cur_type = self.category[i]
