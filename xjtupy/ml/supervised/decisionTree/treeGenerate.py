@@ -183,7 +183,7 @@ class TreeGenerate(object):
             gini_value_sum = 0
             # 在当前数据集下判断是否是连续属性
             if StrOperate.is_number(D[0][original_index]):  # 连续的
-                # 按当前属性排序
+                #  
                 D = D[D[:, original_index].argsort()]
                 divid_t = []
                 cur_attr_value = D[:, original_index].tolist()
