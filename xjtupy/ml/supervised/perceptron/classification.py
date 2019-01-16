@@ -12,21 +12,27 @@ import pandas as pd
 from ML.xjtupy.ml.supervised.perceptron.perceptron import Perceptron
 
 if __name__ == '__main__':
-    df = pd.read_csv('iris.data', header=None)
-    y = df.iloc[:, 4].values
-    y = np.where(y == 'Iris-setosa', -1, 1)
-    X = df.iloc[0:100, 1:3].values
-    min_x = X[:, 1].min()
-    max_x = X[:, 1].max()
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1)
-    ax.scatter(X[:50, 0], X[:50, 1], color='red', marker='o', label='setosa')
-    ax.scatter(X[50:100, 0], X[50:100, 1], color='blue', marker='x', label='versicolor')
-    w = Perceptron().original_form(X, y)
-    b = np.ones(len(X))
-    X = np.insert(X, 0, values=b, axis=1)
-    plt.plot(np.linspace(min_x, max_x, len(X)), np.dot(X, w))
-    plt.xlabel('petal length')
-    plt.ylabel('sepal lenght')
-    plt.legend(loc='upper left')
+    data = np.loadtxt('data.txt', dtype=float, delimiter=',')
+    train_x, train_y = data[:80, :2], data[:80, 2]
+    test_x, test_y = data[80:, :2], data[80:, 2]
+    fig = plt.figure('训练数据')
+    ax = fig.add_subplot(111)
+    X = train_x[:, 0]
+    Y = train_x[:, 1]
+    for i in range(len(train_y)):
+        if train_y[i] > 0:
+            ax.scatter(X[i].tolist(), Y[i].tolist(), color='red', marker='+')
+        else:
+            ax.scatter(X[i].tolist(), Y[i].tolist(), color='green', marker='_')
+    p = Perceptron()
+    # 训练数据
+    w = p.original_form(train_x, train_y)
+    # 测试数据
+    p.predict(test_x, test_y, w)
+    o1 = w[0]
+    o2 = w[1]
+    o3 = w[2]
+    x = np.linspace(3, 6, 50)
+    y = (-o1 * x - o3) / o2
+    ax.plot(x, y)
     plt.show()

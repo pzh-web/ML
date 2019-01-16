@@ -14,7 +14,7 @@ import numpy as np
 
 class Perceptron(object):
 
-    def original_form(self, x, y, eta=0.1):
+    def original_form(self, x, y, eta=1):
         """
         原始形式
         :param x:
@@ -24,7 +24,7 @@ class Perceptron(object):
         """
         # 在样本值向量前面增加一列(1;x)
         b = np.ones(len(x))
-        x = np.insert(x, 0, values=b, axis=1)
+        x = np.insert(x, 2, values=b, axis=1)
         m, n = np.shape(x)
         # 初始化参数(w,b)
         beta = np.zeros(n, dtype=float)
@@ -37,7 +37,7 @@ class Perceptron(object):
             cur_x, cur_y = self.error_classify_sample(x, y, beta)
         return beta
 
-    def dual_form(self, x, y, eta=0.1):
+    def dual_form(self, x, y, eta=1):
         """
         对偶形式
         """
@@ -48,7 +48,6 @@ class Perceptron(object):
         # 选择一个当前参数下的误分类点
         cur_index, cur_y = self.error_classify_sample2(x, y, alpha, b)
         while cur_y is not None:
-            print(1)
             # 更新参数
             alpha[cur_index] += eta
             b += eta * cur_y
@@ -56,8 +55,12 @@ class Perceptron(object):
             cur_index, cur_y = self.error_classify_sample2(x, y, alpha, b)
         return alpha, b
 
-    def predict(self, x, y):
-        pass
+    def predict(self, x, y, w):
+        b = np.ones(len(x))
+        x = np.insert(x, 2, values=b, axis=1)
+        m, n = np.shape(x)
+        accuracy = np.sum([1 if np.sign(np.dot(cur_x, w)) == cur_y else 0 for cur_x, cur_y in zip(x, y)])
+        print('测试精度：%f' % (accuracy / m))
 
     def error_classify_sample(self, x, y, beta):
         """
@@ -73,6 +76,9 @@ class Perceptron(object):
         选取误分类点，用于对偶形式
         """
         for index, (cur_x, cur_y) in enumerate(zip(x, y)):
-            if cur_y * np.sum([alpha[index] * temp_y * np.dot(temp_x, cur_x) + b for temp_x, temp_y in zip(x, y)]) <= 0:
+            if cur_y * (
+                    np.sum([alpha[i] * temp_y * np.dot(temp_x, cur_x) for i, (temp_x, temp_y) in
+                            enumerate(zip(x, y))]) + b) <= 0:
+                print(index, cur_y)
                 return index, cur_y
         return None, None
