@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Time  : 2019/1/13 14:47
-# @Author: peng yang
+# @Author: Vincent
 # @File  : prePruning.py
 import numpy as np
 from ML.xjtupy.ml.supervised.decisionTree.treeGenerate import TreeGenerate

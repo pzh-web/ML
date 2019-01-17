@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Time  : 2019/1/12 17:10
-# @Author: peng yang
+# @Author: Vincent
 # @File  : classification.py
 
 import numpy as np

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Time  : 2019/1/12 17:17
-# @Author: peng yang
+# @Author: Vincent
 # @File  : visualDecisionTree.py
 
 import matplotlib.pyplot as plt

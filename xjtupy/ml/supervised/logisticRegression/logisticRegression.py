@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Time  : 2018/11/27 21:19
-# @Author: peng yang
+# @Author: Vincent
 # @File  : logisticRegression.py
 
 import numpy as np

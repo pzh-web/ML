@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Time  : 2019/1/14 16:40
-# @Author: peng yang
+# @Author: Vincent
 # @File  : regTree.py
 import numpy as np
 

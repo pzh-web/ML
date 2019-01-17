@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Time  : 2019/1/13 16:51
-# @Author: peng yang
+# @Author: Vincent
 # @File  : strOperate.py
 
 

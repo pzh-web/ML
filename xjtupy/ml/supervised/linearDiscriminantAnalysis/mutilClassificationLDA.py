@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Time  : 2019/1/10 10:13
-# @Author: peng yang
+# @Author: Vincent
 # @File  : mutilClassificationLDA.py
 
 import matplotlib

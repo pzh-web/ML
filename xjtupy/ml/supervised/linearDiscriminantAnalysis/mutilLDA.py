@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Time  : 2019/1/10 10:18
-# @Author: peng yang
+# @Author: Vincent
 # @File  : mutilLDA.py
 from ML.xjtupy.ml.supervised.linearDiscriminantAnalysis.linearDiscriminantAnalysis import LinearDiscriminantAnalysis
 import numpy as np

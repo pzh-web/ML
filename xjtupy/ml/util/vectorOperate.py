@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Time  : 2019/1/9 21:51
-# @Author: peng yang
+# @Author: Vincent
 # @File  : vectorOperate.py
 import numpy as np
 

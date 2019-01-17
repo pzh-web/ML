@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Time  : 2018/11/23 21:29
-# @Author: peng yang
+# @Author: Vincent
 # @File  : oneEleLinearRegression.py
 import matplotlib
 import numpy as np

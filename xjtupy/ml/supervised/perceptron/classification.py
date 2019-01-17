@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Time  : 2019/1/15 10:39
-# @Author: peng yang
+# @Author: Vincent
 # @File  : classification.py
 
-import matplotlib
 import numpy as np
 import matplotlib.pyplot as plt
-import pandas as pd
 
 from ML.xjtupy.ml.supervised.perceptron.perceptron import Perceptron
 

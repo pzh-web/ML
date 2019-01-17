@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Time  : 2019/1/15 10:40
-# @Author: peng yang
+# @Author: Vincent
 # @File  : perceptron.py
 import numpy as np
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Time  : 2019/1/12 19:14
-# @Author: peng yang
+# @Author: Vincent
 # @File  : treeGenerate.py
 import numpy as np
 

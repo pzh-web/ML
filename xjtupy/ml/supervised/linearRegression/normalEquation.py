@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Time  : 2018/11/27 19:04
-# @Author: peng yang
+# @Author: Vincent
 # @File  : normalEquation.py
 
 import numpy as np
