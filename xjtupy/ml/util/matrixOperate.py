@@ -33,3 +33,17 @@ class MatrixOperate(object):
         按行求矩阵的均值
         """
         return np.mean(matrix, axis=1)
+
+    @staticmethod
+    def sum_row(matrix):
+        """
+        矩阵行相加
+        """
+        return matrix.sum(axis=0)
+
+    @staticmethod
+    def sum_column(matrix):
+        """
+        矩阵列相加
+        """
+        return matrix.sum(axis=1)
