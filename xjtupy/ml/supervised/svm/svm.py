@@ -18,7 +18,7 @@ class SVM(object):
         """
         :param x: 训练样本
         :param y: 训练样本标签
-        :param c: 软间隔SVM参数,C取值越大，迫使所有样本都满足硬间隔分类器的条件，C取值有限，则允许一些样本不满足约束
+        :param c: 惩罚系数,C取值越大，迫使所有样本都满足硬间隔分类器的条件，C取值有限，则允许一些样本不满足约束
         :param tolerance:阈值，用于验证KKT条件
         :param kernel_option:核操作参数（核函数类型，和函数参数）
         """

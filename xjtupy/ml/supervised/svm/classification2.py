@@ -29,8 +29,8 @@ if __name__ == '__main__':
     predict_result = svm.predict_linear(test_x, test_y)
 
     fig = plt.figure('训练数据')
-    plt.title('支持向量机')
     ax = fig.add_subplot(111)
+    plt.title('支持向量机')
     X = train_x[:, 0]
     Y = train_x[:, 1]
 
