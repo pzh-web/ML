@@ -34,7 +34,7 @@ class MutilLDA(LinearDiscriminantAnalysis):
         # 类间散度矩阵
         Sb = np.zeros(shape=(n, n))
         # 样本数据集的均值
-        u = t.mean_column(x)
+        u = MatrixOperate.mean_column(x)
         for c in self.category:
             data_c = [x[i] for i in np.where(y == c)[0]]
             data_u = MatrixOperate.mean_column(data_c)
@@ -68,7 +68,7 @@ class MutilLDA(LinearDiscriminantAnalysis):
             cur_type = None
             # 计算与那个类别中心点投影距离最近
             for i in range(len(self.category)):
-                distance = VectorOperate.distance(low_dimension, np.dot(self.w.T, self.cate_u[i ]))
+                distance = VectorOperate.distance(low_dimension, np.dot(self.w.T, self.cate_u[i]))
                 if distance < lowest_distance:
                     lowest_distance = distance
                     cur_type = self.category[i]
